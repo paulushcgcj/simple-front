@@ -1,6 +1,6 @@
 ARG VARIANT=10
 FROM node:${VARIANT}
-LABEL maintainer="Paulo Gomes da Cruz Junior <paulo.cruz@encora.com>"
+LABEL maintainer="Paulo Gomes da Cruz Junior <paulushc@gmail.com>"
 
 RUN mkdir -p /opt/data
 RUN chown -R node:node /opt/data
