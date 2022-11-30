@@ -43,12 +43,12 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           with:
             args: >
-              -Dsonar.exclusions=**/__test__/**,.github/**/*
-              -Dsonar.coverage.exclusions=**/__test__/**,.github/**/*
+              -Dsonar.exclusions=**/test/**,.github/**/*
+              -Dsonar.coverage.exclusions=**/test/**,.github/**/*
               -Dsonar.organization=paulushcgcj-github
               -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
               -Dsonar.cobertura.reportPaths=coverage/cobertura-coverage.xml
               -Dsonar.project.monorepo.enabled=false
               -Dsonar.projectKey=paulushcgcj_simple-front
               -Dsonar.sources=.
-              -Dsonar.tests=src/__test__/components
+              -Dsonar.tests=src/test/
