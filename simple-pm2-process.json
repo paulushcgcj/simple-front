@@ -1,0 +1,7 @@
+{
+  "apps" : [{
+      "name"        : "simple-front",
+      "script"      : "serve -s .",
+      "watch"       : true
+  }]
+}
