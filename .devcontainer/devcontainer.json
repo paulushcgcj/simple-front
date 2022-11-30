@@ -48,5 +48,5 @@
     "onAutoForward": "notify"
   },
   "remoteUser": "node",
-  "postCreateCommand": "cp -r /.ssh/ ~/.ssh/"
+  "postCreateCommand": "cp -r /.ssh/ ~/"
 }
