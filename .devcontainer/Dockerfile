@@ -15,7 +15,9 @@ ARG GITMAIL
 
 ADD consolerc /consolerc.sh
 ADD keys/* /.ssh/
+ADD resetgit.sh /usr/local/bin/resetgit
 RUN cat /consolerc.sh >> /etc/profile
+RUN chmod +x /usr/local/bin/resetgit
 
 RUN git config --global user.name "${GITUSER}"
 RUN git config --global user.email "${GITMAIL}"
