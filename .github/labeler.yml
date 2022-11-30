@@ -1,0 +1,14 @@
+automation:
+  - .github/*
+
+coverage:
+  - src/test/**/*.ts
+
+source:
+  - src/portal/**/*.ts
+
+docker:
+  - any: ['Dockerfile','dockerfile-entrypoint.sh']
+
+public:
+  - public/*
