@@ -71,8 +71,18 @@ jobs:
       - name: CheckStyle
         run: npm run checkstyle
 
-  unit-test:
-    name: Unit Test
+      - name: Report Dependencies
+        run: npm run depscheck
+
+      - name: Archive CycloneDX
+        uses: actions/upload-artifact@v2
+        with:
+          name: cyclone
+          path: target/bom.json
+          retention-days: 5
+
+  test:
+    name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -93,33 +103,8 @@ jobs:
       - name: Install dependencies
         run: npm i --prefer-offline
 
-      - name: Run Unit Test
-        run: npm run test:unit
-
-  integrated-test:
-    name: Integrated Test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-    needs:
-      - validate
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm i --prefer-offline
-
-      - name: Run Integrated Test
-        run: npm run test:integrated
+      - name: Run React Test
+        run: npm run test:react
 
   e2e-test:
     name: End-to-End Test
@@ -221,13 +206,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,.github/**/*,**/setupTests.ts
-            -Dsonar.inclusions=**/*.ts,**/*.tsx
-            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,.github/**/*,**/setupTests.ts
             -Dsonar.organization=paulushcgcj-github
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.cobertura.reportPaths=coverage/cobertura-coverage.xml
-            -Dsonar.project.monorepo.enabled=false
             -Dsonar.projectKey=paulushcgcj_simple-front
-            -Dsonar.sources=.
-            -Dsonar.tests=src/
