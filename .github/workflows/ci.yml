@@ -247,6 +247,7 @@ jobs:
     needs:
       - eslint
       - e2e-test
+      - sonarcloud
     steps:
       - uses: actions/checkout@v3
         with:
