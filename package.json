@@ -19,15 +19,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "react-scripts build",    
     "eject": "react-scripts eject",
     "compile": "tsc --noEmit",
     "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.t{s,sx}",
     "pretty": "prettier --config .prettierrc --write src/{,*/**/}*.t{s,sx}",
     "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json",
-    "test:unit": "tsc --noEmit",
-    "test:integrated": "tsc --noEmit",
+    "test:unit": "react-scripts test",
     "test:e2e": "tsc --noEmit",
     "test:coverage": "tsc --noEmit"
   },
