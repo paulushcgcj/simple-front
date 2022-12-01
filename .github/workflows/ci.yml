@@ -229,4 +229,4 @@ jobs:
             -Dsonar.project.monorepo.enabled=false
             -Dsonar.projectKey=paulushcgcj_simple-front
             -Dsonar.sources=.
-            -Dsonar.tests=src/
+            -Dsonar.tests=**/*.test.ts,**/*.test.tsx
