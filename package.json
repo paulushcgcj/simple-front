@@ -20,7 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.tsx",
+    "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +41,25 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "@types/react-test-renderer": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "cypress": "^10.8.0",
+    "eslint": "^8.24.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-jsdoc": "^39.3.6",
+    "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "jest-environment-jsdom": "^29.0.1",
+    "playwright-webkit": "^1.27.1"
   }
 }

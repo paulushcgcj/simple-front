@@ -6,6 +6,6 @@ WORKDIR /app/
 COPY build/ .
 COPY simple-pm2-process.json ./
 
-RUN npm install pm2@5.2.2 serve@14.1.2 -g
+RUN npm install pm2@5.2.2 serve@14.1.2 react-inject-env@2.1.0 -g
 
-CMD ["pm2-runtime","simple-pm2-process.json"]
+CMD ["react-inject-env","set","-d",".","&&","pm2-runtime","simple-pm2-process.json"]

@@ -197,3 +197,4 @@ sketch
 .devcontainer/keys/id_rsa
 .devcontainer/keys/id_rsa.pub
 .devcontainer/keys/known_hosts
+project.bom.json
