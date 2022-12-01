@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@microsoft/eslint-formatter-sarif": "^2.1.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -25,10 +26,10 @@
     "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.t{s,sx}",
     "pretty": "prettier --config .prettierrc --write src/{,*/**/}*.t{s,sx}",
     "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json",
-    "test:unit":"tsc --noEmit",
-    "test:integrated":"tsc --noEmit",
-    "test:e2e":"tsc --noEmit",
-    "test:coverage":"tsc --noEmit"
+    "test:unit": "tsc --noEmit",
+    "test:integrated": "tsc --noEmit",
+    "test:e2e": "tsc --noEmit",
+    "test:coverage": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +54,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "cypress": "^10.8.0",
-    "eslint": "^8.24.0",
+    "eslint": "^8.10.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-standard-with-typescript": "^22.0.0",
     "eslint-plugin-cypress": "^2.12.1",
