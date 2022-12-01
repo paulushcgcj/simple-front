@@ -222,6 +222,7 @@ jobs:
         with:
           args: >
             -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,.github/**/*,**/setupTests.ts
+            -Dsonar.inclusions=**/*.ts,**/*.tsx
             -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,.github/**/*,**/setupTests.ts
             -Dsonar.organization=paulushcgcj-github
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
@@ -229,4 +230,4 @@ jobs:
             -Dsonar.project.monorepo.enabled=false
             -Dsonar.projectKey=paulushcgcj_simple-front
             -Dsonar.sources=.
-            -Dsonar.tests=**/*.test.ts,**/*.test.tsx
+            -Dsonar.tests=src/
