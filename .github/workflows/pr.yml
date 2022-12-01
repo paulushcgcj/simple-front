@@ -30,25 +30,68 @@ jobs:
         type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
 
   sonarcloud:
-      name: SonarCloud
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
-        - name: SonarCloud Scan
-          uses: SonarSource/sonarcloud-github-action@master
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          with:
-            args: >
-              -Dsonar.exclusions=**/*.test.tsx,.github/**/*
-              -Dsonar.coverage.exclusions=**/*.test.tsx,.github/**/*
-              -Dsonar.organization=paulushcgcj-github
-              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-              -Dsonar.cobertura.reportPaths=coverage/cobertura-coverage.xml
-              -Dsonar.project.monorepo.enabled=false
-              -Dsonar.projectKey=paulushcgcj_simple-front
-              -Dsonar.sources=.
-              -Dsonar.tests=src/
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.exclusions=**/*.test.tsx,.github/**/*
+            -Dsonar.coverage.exclusions=**/*.test.tsx,.github/**/*
+            -Dsonar.organization=paulushcgcj-github
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.cobertura.reportPaths=coverage/cobertura-coverage.xml
+            -Dsonar.project.monorepo.enabled=false
+            -Dsonar.projectKey=paulushcgcj_simple-front
+            -Dsonar.sources=.
+            -Dsonar.tests=src/
+
+  changelog:
+    name: Changelog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Checkout branch
+        uses: actions/checkout@v3
+        with:
+          ref: refs/heads/${{ github.head_ref }}
+
+      - name: Conventional Changelog Update
+        continue-on-error: true
+        uses: TriPSs/conventional-changelog-action@v3
+        id: changelog
+        with:
+          github-token: ${{ github.token }}
+          output-file: 'CHANGELOG.md'
+          skip-version-file: 'true'
+          skip-commit: 'true'
+          git-push: 'false'
+          git-branch: refs/heads/${{ github.head_ref }}
+
+      - name: Checkout pr
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Comment PR
+        continue-on-error: true
+        uses: thollander/actions-comment-pull-request@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        with:
+          message: |
+            # Current changelog
+            
+            ${{ steps.changelog.outputs.clean_changelog }}
+          comment_includes: '# Current changelog'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
