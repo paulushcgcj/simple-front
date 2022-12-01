@@ -25,7 +25,7 @@
     "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.t{s,sx}",
     "pretty": "prettier --config .prettierrc --write src/{,*/**/}*.t{s,sx}",
     "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json",
-    "test:unit": "react-scripts test",
+    "test:react": "react-scripts test",
     "test:e2e": "tsc --noEmit",
     "test:coverage": "tsc --noEmit"
   },
