@@ -199,3 +199,4 @@ sketch
 .devcontainer/keys/known_hosts
 project.bom.json
 eslint-results.sarif
+junit.xml

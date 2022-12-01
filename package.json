@@ -2,6 +2,15 @@
   "name": "simple-front",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulushcgcj/simple-front.git"
+  },
+  "author": "Paulo Gomes da Cruz Junior",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/paulushcgcj/simple-front/issues"
+  },
   "dependencies": {
     "@microsoft/eslint-formatter-sarif": "^2.1.7",
     "@testing-library/jest-dom": "^5.16.5",
@@ -19,15 +28,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",    
+    "build": "react-scripts build",
     "eject": "react-scripts eject",
     "compile": "tsc --noEmit",
     "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.t{s,sx}",
     "pretty": "prettier --config .prettierrc --write src/{,*/**/}*.t{s,sx}",
     "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json",
-    "test:react": "react-scripts test --watchAll",
+    "test:react": "react-scripts test --coverage=false --detectOpenHandles",
     "test:e2e": "tsc --noEmit",
-    "test:coverage": "tsc --noEmit"
+    "test:coverage": "react-scripts test --coverage --detectOpenHandles --testResultsProcessor=\"jest-junit\""    
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +54,31 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "coverageReporters": [
+      "clover",
+      "json",
+      "lcov",
+      [
+        "text",
+        {
+          "skipFull": true
+        }
+      ]
     ]
   },
   "devDependencies": {
@@ -65,6 +99,12 @@
     "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "4.3.0",
     "jest-environment-jsdom": "^29.0.1",
+    "jest-junit": "^15.0.0",
     "playwright-webkit": "^1.27.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
