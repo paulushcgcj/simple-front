@@ -21,8 +21,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.tsx",
-    "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json"
+    "compile": "tsc --noEmit",
+    "checkstyle": "prettier --config .prettierrc --check src/{,*/**/}*.t{s,sx}",
+    "pretty": "prettier --config .prettierrc --write src/{,*/**/}*.t{s,sx}",
+    "depscheck": "npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file project.bom.json",
+    "test:unit":"tsc --noEmit",
+    "test:integrated":"tsc --noEmit",
+    "test:e2e":"tsc --noEmit",
+    "test:coverage":"tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [
