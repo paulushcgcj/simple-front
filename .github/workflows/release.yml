@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:  
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  artifact:
+    name: Build artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm i --prefer-offline
+
+      - name: Generate Artifact
+        run: npm run build
+
+      - name: Saving artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: service
+          path: build/
+          retention-days: 1
+
+  push_to_registry:
+    name: Push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write      
+      id-token: write
+    needs:
+      - artifact
+    if: startsWith(github.ref_name,'v')    
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+       - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
+        with:
+          cosign-release: 'v1.11.0'
+
+      - name: Getting artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: service
+          path: ./
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+
+  check_registry:
+    name: Checking Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write      
+    needs:
+      - push_to_registry
+
+      - name: Image Scan
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          image-ref: ghcr.io/${{ github.repository }}
+          ignore-unfixed: true
+          severity: CRITICAL
+          format: 'sarif'
+          output: 'docker-result.sarif'
+
+      - name: Upload Security results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        with:
+          sarif_file: "docker-result.sarif"
+
+      - name: Run Snyk to check Docker image for vulnerabilities        
+        continue-on-error: true
+        uses: snyk/actions/docker@14818c4695ecc4045f33c9cee9e795a788711ca4
+        env:          
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ghcr.io/${{ github.repository }}
+          args: --file=Dockerfile
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        with:
+          sarif_file: snyk.sarif
+
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"        
+        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
