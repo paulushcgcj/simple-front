@@ -33,9 +33,6 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-    needs:
-      - eslint
-      - coverage-test
     steps:
       - uses: actions/checkout@v3
         with:
