@@ -19,9 +19,7 @@ function App() {
           Learn React
         </a>
         <p>
-          {process.env.REACT_APP_MESSAGE}
-          {' '}
-          {process.env.NODE_ENV}
+          {process.env.REACT_APP_MESSAGE} {process.env.NODE_ENV}
         </p>
       </header>
     </div>
