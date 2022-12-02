@@ -8,7 +8,7 @@ RUN chmod 755 /opt/data
 
 RUN apk add --update sudo
 RUN apk --update add net-tools zip git openssh
-RUN npm install -g typescript pm2 serve react-inject-env
+RUN npm install -g typescript pm2 serve react-inject-env eslint 
 
 ARG GITUSER
 ARG GITMAIL

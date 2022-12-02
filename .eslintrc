@@ -20,7 +20,8 @@
       "jsx": true
     },
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "settings": {
     "import/resolver": {
@@ -30,8 +31,13 @@
           ".jsx",
           ".ts",
           ".tsx"
+        ],
+        "moduleDirectory": [
+          "node_modules",
+          "src/"
         ]
-      }
+      },
+      "typescript": {}
     }
   },
   "plugins": [

@@ -1,18 +1,15 @@
 import React from 'react';
+import { env } from '@main/env';
+
 import logo from './logo.svg';
 import './App.css';
-import { env } from './env';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit &nbsp
-          <code>src/App.tsx</code>
-          &nbsp and save to reload.
-        </p>
+        <p>{env.REACT_APP_MESSAGE}</p>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -21,7 +18,11 @@ function App() {
         >
           Learn React
         </a>
-        {env.MESSAGE}
+        <p>
+          {process.env.REACT_APP_MESSAGE}
+          {' '}
+          {process.env.NODE_ENV}
+        </p>
       </header>
     </div>
   );
