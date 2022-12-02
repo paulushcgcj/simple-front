@@ -6,7 +6,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   label:
     runs-on: ubuntu-latest
     permissions:
@@ -14,44 +13,54 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Labeler
+        uses: actions/labeler@v4
+        continue-on-error: true
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
 
-    - name: Labeler
-      uses: actions/labeler@v4
-      continue-on-error: true
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-
-    - name: Conventional Label
-      uses: bcoe/conventional-release-labels@v1
-      continue-on-error: true
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        ignored_types: '["chore","pr"]'
-        type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
+      - name: Conventional Label
+        uses: bcoe/conventional-release-labels@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ignored_types: '["chore","pr"]'
+          type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
 
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    needs:
+      - eslint
+      - coverage-test
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm i --prefer-offline
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.exclusions=**/*.test.tsx,.github/**/*
-            -Dsonar.coverage.exclusions=**/*.test.tsx,.github/**/*
             -Dsonar.organization=paulushcgcj-github
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.cobertura.reportPaths=coverage/cobertura-coverage.xml
-            -Dsonar.project.monorepo.enabled=false
             -Dsonar.projectKey=paulushcgcj_simple-front
-            -Dsonar.sources=.
-            -Dsonar.tests=src/
 
   changelog:
     name: Changelog
@@ -61,7 +70,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Checkout branch
         uses: actions/checkout@v3
         with:
@@ -91,7 +100,7 @@ jobs:
         with:
           message: |
             # Current changelog
-            
+
             ${{ steps.changelog.outputs.clean_changelog }}
           comment_includes: '# Current changelog'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,6 +110,6 @@ jobs:
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
-        
+
       - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v2          
+        uses: actions/dependency-review-action@v2
