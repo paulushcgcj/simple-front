@@ -15,10 +15,11 @@
       "*.tsx",
       "*.json"
     ],
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
     "prettier.requireConfig": true,
-    "eslint.format.enable": true
+    "eslint.format.enable": true,
+    "eslint.nodeEnv": "ide"
   },
   "extensions": [
     "mgmcdermott.vscode-language-babel",
